@@ -81,7 +81,7 @@ public class MainForm extends JFrame implements Form {
 	private Client[] _clients;
 	private Vector<Path> _fileList = new Vector<Path>();
 
-	private String pathToCSV; //jmb
+	private String pathToCSV;
 	
 	public MainForm() {
 		//GUI Basics
@@ -363,8 +363,8 @@ public class MainForm extends JFrame implements Form {
 			_sampleLocalPath = _params.getGlobalParam("SEQUEST.BaseFolder", "C:\\sequest") + _sep + _params.getClientParam("CLIENT_TAG", "") + _sep+ subPath;// + _sep + _sample;
 			this.log("          Local Path: "+_sampleLocalPath);
 			//Set backup paths
-			_srBackupPath = _params.getGlobalParam("SR_BACKUP_PATH", "")+_sep+_params.getClientParam("CLIENT_TAG", "")+ _sep + subPath;//jmb
-			String rawBackupPath = _params.getGlobalParam("RAW_BACKUP_PATH", "")+_sep+_params.getClientParam("CLIENT_TAG", "")+ _sep + subPath;//jmb
+			_srBackupPath = _params.getGlobalParam("SR_BACKUP_PATH", "")+_sep+_params.getClientParam("CLIENT_TAG", "")+ _sep + subPath;
+			String rawBackupPath = _params.getGlobalParam("RAW_BACKUP_PATH", "")+_sep+_params.getClientParam("CLIENT_TAG", "")+ _sep + subPath;
 			System.out.println("Backup path for .raw file: " + rawBackupPath);
 			//Create directory
 			Files.createDirectories(Paths.get(_sampleLocalPath));
@@ -431,9 +431,9 @@ public class MainForm extends JFrame implements Form {
 		*/
 		
 		this.search(_searchEngine);
-		//jmb: Copy all files into directory _samplePath before zipping. Added 130828.
+		// Copy all files into directory _samplePath before zipping
 		System.out.println("_sampleLocalPath: " + _sampleLocalPath);
-		String[] extns = {".p2p", ".p2c", ".p1p", ".p1c", ".raw", ".met", ".seq", ".cfg", ".csv"}; //jmb
+		String[] extns = {".p2p", ".p2c", ".p1p", ".p1c", ".raw", ".met", ".seq", ".cfg", ".csv"};
 		for (String extn: extns) {
 			try {
 				Files.copy(Paths.get(_sampleLocalPath+extn), Paths.get(_sampleLocalPath), REPLACE_EXISTING);
@@ -456,7 +456,7 @@ public class MainForm extends JFrame implements Form {
 		this.make7Zip();
 		this.sendToLoader();		
 		this.sendToProteome();
-		//jmb move raw file before deleting everything else
+		// move raw file before deleting everything else
 		System.out.println("Moving .raw file to ");
 		try {
 			Files.copy(Paths.get(_sampleLocalPath+".raw"), Paths.get(_sampleLocalPath), REPLACE_EXISTING);
@@ -529,7 +529,7 @@ public class MainForm extends JFrame implements Form {
 	private void makeDTA() {
 		this.pause("Making DTA Files");
 		this.log("          Making DTA files...");
-		this.log("msConv params: " + _extractParam); //jmb
+		this.log("msconvert params: " + _extractParam);
 		String cmd = null;
 		/*
 		 * Use the new msconvert.exe to create the mgf file
@@ -538,14 +538,12 @@ public class MainForm extends JFrame implements Form {
 		if (_fileType.equalsIgnoreCase("THMRAW")) {
 			cmd = "\""+_params.getGlobalParam("SEQUEST.mgf_maker", "")+"\" "+_sampleLocalPath+".raw"+" --mgf "+_extractParam+" --outdir "+_sampleLocalPath+" --outfile merged";
 			// works! cmd = "\""+_params.getGlobalParam("SEQUEST.mgf_maker", "")+"\" "+_sampleLocalPath+".raw"+" --mgf --outdir "+_sampleLocalPath+" --outfile merged"; //jmb
-//			builder = new ProcessBuilder(_params.getGlobalParam("SEQUEST.mgf_maker", ""), _sampleLocalPath+".raw", "--mgf","--filter","\"peakPicking", "true", "[1,2]\"","--filter","\"MS2Deisotope", "true\"", "--outdir", _sampleLocalPath, "--outfile", "merged");   //jmb changed 150707 to remove MS2Deisotope filter
-//			builder = new ProcessBuilder(_params.getGlobalParam("SEQUEST.mgf_maker", ""), _sampleLocalPath+".raw", "--mgf","--filter","\"peakPicking", "true", "[1,2]\"", "--outdir", _sampleLocalPath, "--outfile", "merged");
 			List<String> processCall = new ArrayList<>(Arrays.asList(_params.getGlobalParam("SEQUEST.mgf_maker", ""), _sampleLocalPath+".raw", "--mgf"));
 			processCall.addAll(Arrays.asList(_extractParam.split(" ")));
 			processCall.addAll(Arrays.asList("--outdir", _sampleLocalPath, "--outfile", "merged"));
 			builder = new ProcessBuilder(processCall);
-			// works! builder = new ProcessBuilder(_params.getGlobalParam("SEQUEST.mgf_maker", ""), _sampleLocalPath+".raw", "--mgf", "--outdir", _sampleLocalPath, "--outfile", "merged"); //jmb
-			System.out.println("Process sent: "+ builder.toString()); //jmb
+			// works! builder = new ProcessBuilder(_params.getGlobalParam("SEQUEST.mgf_maker", ""), _sampleLocalPath+".raw", "--mgf", "--outdir", _sampleLocalPath, "--outfile", "merged");
+			System.out.println("Process sent: "+ builder.toString());
 		}
 		else if (_fileType.equalsIgnoreCase("mzData")){
 			cmd = "java -Xmx512m -jar"+_appPath+_sep+"ExtractMSMS.jar mzData "+_sampleLocalPath+_fileExt;
@@ -630,7 +628,7 @@ public class MainForm extends JFrame implements Form {
 		processCall.addAll(Arrays.asList(_extractParam.split(" ")));
 		processCall.addAll(Arrays.asList("--outdir",rawpath.getParent().toString()));
 		builder = new ProcessBuilder(processCall);
-		this.log("     " + cmd);//jmb
+		this.log("     " + cmd);
 		System.out.println(cmd);
 		System.out.println(builder.toString());
 		
@@ -738,7 +736,7 @@ public class MainForm extends JFrame implements Form {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		String mgf = _sample+"_"+dateFormat.format(new Date())+".mgf";
 		Path mgfFolder = Paths.get(_params.getGlobalParam("SEQUEST.MascotDaemonFolder", ""), _searchParam.substring(0, _searchParam.lastIndexOf(".")), mgf);
-		this.log("Moving mgf file to " + mgfFolder);//jmb
+		this.log("Moving mgf file to " + mgfFolder);
 		try {		
 			Files.move(Paths.get(_sampleLocalPath, "merged.mgf"), mgfFolder);
 		} catch (IOException e) {
@@ -779,7 +777,7 @@ public class MainForm extends JFrame implements Form {
 				resultXML = Paths.get(_sampleLocalPath, _sample+".xml");
 				resultCSV = Paths.get(_sampleLocalPath, _sample+".csv");
 				
-				pathToCSV = Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv").toString();//jmb
+				pathToCSV = Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv").toString();
 				
 				Files.move(Paths.get(line.substring(4)), resultXML, REPLACE_EXISTING);
 			}
@@ -787,10 +785,9 @@ public class MainForm extends JFrame implements Form {
 				this.log("          ERROR: XML is in error state - "+line);
 				this.log("			Trying to move .csv again");
 
-//				Files.move(Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv"), Paths.get(line.substring(4, line.lastIndexOf(".")-4)), REPLACE_EXISTING); //jmb
 			}
 			
-			// @aly 20140820 
+			//
 			// .dat.csv file is generated after .xml but not before the status text file (mascotdownloaderoutput.txt) is
 			// created. Below is a checker that maxes out after 60 tries (10 minutes), before looking for the file
 			// If the file is found, then it will wait for 1 minute before moving the file, just in case the csv is still
@@ -821,9 +818,9 @@ public class MainForm extends JFrame implements Form {
 				}
 			}
 			
-			this.log("Moving the csv file at" + Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv")); //jmb
+			this.log("Moving the csv file at" + Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv"));
 			
-			Files.move(Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv"), resultCSV, REPLACE_EXISTING); //jmb ***THIS DOESN'T WORK
+			Files.move(Paths.get(line.substring(4, line.lastIndexOf(".")-4)+".dat.csv"), resultCSV, REPLACE_EXISTING);
 			
 		} catch (IOException e) {
 			this.log("          ERROR: Could not copy XML file");
@@ -916,7 +913,7 @@ public class MainForm extends JFrame implements Form {
 	 * This method adds all the files related to this sample
 	 * to a compressed zip file for transfer to AutoLoad
 	 */
-	private void zipFiles() {		//jmb deprecated--use make7Zip for zipfiles now
+	private void zipFiles() {		// deprecated--use make7Zip for zipfiles now
 		this.pause("Zipping files");
 		this.log("          Zipping files...");
 		File zip = new File(_sampleLocalPath+".zip");
@@ -951,7 +948,7 @@ public class MainForm extends JFrame implements Form {
 		}
 		this.logNNL("done!");
 	}
-	private void make7Zip() { //jmb
+	private void make7Zip() {
 		this.pause("Zipping files");
 		this.log("          Zipping files...");
 		String cmd = null;
@@ -959,7 +956,7 @@ public class MainForm extends JFrame implements Form {
 		cmd = "\""+_params.getGlobalParam("SEQUEST.7ziplocation", "C:\\Program Files\\7zip\\7za.exe")+ "\" a" + " -tzip " +  zipPath.toString() + " \"" + _sampleLocalPath + "*\"";
 		ProcessBuilder builder = null;
 		builder = new ProcessBuilder(_params.getGlobalParam("SEQUEST.7ziplocation", "C:\\Program Files\\7zip\\7za.exe"), "a", "-tzip","\""+zipPath.toString()+"\"","\""+_sampleLocalPath+"*\"");
-		System.out.println("7zip command: "+ builder.command()); //jmb
+		System.out.println("7zip command: "+ builder.command());
 		this.log("7zip command: "+ builder.command());
 		List<String> cmdList = builder.command();
 		String cmdPB="";
@@ -998,7 +995,6 @@ public class MainForm extends JFrame implements Form {
 		try {
 			DirectoryStream<Path> files = Files.newDirectoryStream(dir);
 			for (Path file:files) {
-				//if (file.toString().contains(_sample) && !file.toString().contains(".zip")) { jmb
 				if (file.toString().contains(_sample) && !file.toString().contains(".zip")) {
 					_fileList.add(file);
 					if (Files.isDirectory(file)) {
@@ -1071,16 +1067,15 @@ public class MainForm extends JFrame implements Form {
 		this.pause("File Deletion");
 		this.log("          Deleting files...");
 		try {
-			//DirectoryStream<Path> files = Files.newDirectoryStream(Paths.get(_sampleLocalPath.substring(0, _sampleLocalPath.lastIndexOf(_sep))), _sample+".*"); //jmb
 			DirectoryStream<Path> files = Files.newDirectoryStream(Paths.get(_sampleLocalPath.substring(0, _sampleLocalPath.lastIndexOf(_sep)),_sample)); //jmb substitute this for the call above
-			this.log("			Deleting " + Paths.get(_sampleLocalPath.substring(0, _sampleLocalPath.lastIndexOf(_sep)),_sample)); //jmb
+			this.log("			Deleting " + Paths.get(_sampleLocalPath.substring(0, _sampleLocalPath.lastIndexOf(_sep)),_sample));
 			for (Path file:files) {
 				if(file.toString().substring(file.toString().lastIndexOf(".")) != ".raw"){	//jmb delete all files except .raws
 					System.out.println("Deleting " + file.toString());
 					Files.deleteIfExists(file);
 				}	
 			}
-			Paths.get(_sampleLocalPath.substring(0, _sampleLocalPath.lastIndexOf(_sep)), _sample).toFile().delete(); //jmb
+			Paths.get(_sampleLocalPath.substring(0, _sampleLocalPath.lastIndexOf(_sep)), _sample).toFile().delete();
 			files.close();
 		} catch (IOException e1) {
 			System.err.println("Could not delete "+_sample);
