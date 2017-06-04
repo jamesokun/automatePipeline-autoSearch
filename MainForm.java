@@ -65,10 +65,6 @@ import modules.Params;
 //import autoLoad.Form;
 //import autoLoad.Params;
 
-/**
- * @authors jbelmont, njooma
- *
- */
 @SuppressWarnings("serial")
 public class MainForm extends JFrame implements Form {
 	
@@ -1108,9 +1104,6 @@ public class MainForm extends JFrame implements Form {
 	 * This class implements the action method for 
 	 * the priority button. It brings up the panel
 	 * for setting the priority of clients.
-	 * 
-	 * @author njooma
-	 *
 	 */
 	private class PriorityButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -1130,9 +1123,6 @@ public class MainForm extends JFrame implements Form {
 	 * This class sets the _isPaused boolean to 
 	 * either true or false depending on the
 	 * paused state.
-	 * 
-	 * @author njooma
-	 *
 	 */
 	private class PauseListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -1154,9 +1144,6 @@ public class MainForm extends JFrame implements Form {
 	 * This method changes the priority of the clients
 	 * when the user changes them in the table using
 	 * the dropdown menus.
-	 * 
-	 * @author njooma
-	 *
 	 */
 	private class PriorityListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
