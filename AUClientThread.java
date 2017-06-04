@@ -18,8 +18,6 @@ import modules.Params;
  * This class takes handles clients. Once
  * a client is passed to it, it determines
  * what to do with incoming messages.
- * 
- * @authors jbelmont, njooma
  */
 public class AUClientThread extends Thread {
 
