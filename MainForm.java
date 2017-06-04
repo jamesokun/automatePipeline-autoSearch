@@ -794,7 +794,7 @@ public class MainForm extends JFrame implements Form {
 					this.log("Waiting for CSV file to be generated");
 				}
 				try {
-				    Thread.sleep(10000);                 //1000 milliseconds is one second.
+				    Thread.sleep(10000);                 // i.e. 10 seconds.
 				} catch(InterruptedException ex) {
 				    Thread.currentThread().interrupt();
 				}
