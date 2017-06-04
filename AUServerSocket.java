@@ -12,8 +12,6 @@ import modules.Params;
  * listens for incoming connections. It then
  * accepts the connections and sends it to a
  * new thread that handles the client (AUClientThread).
- * 
- * @author njooma
  */
 public class AUServerSocket extends Thread {
 	
