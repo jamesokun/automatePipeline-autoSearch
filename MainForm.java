@@ -779,8 +779,6 @@ public class MainForm extends JFrame implements Form {
 			}
 			else {
 				this.log("          ERROR: XML is in error state - "+line);
-				this.log("			Trying to move .csv again");
-
 			}
 			
 			//
