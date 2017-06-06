@@ -44,6 +44,7 @@ public class AUClientThread extends Thread {
 			String ready = in.readUTF();
 	        System.out.println("Incoming query: "+ready);
 	        //If system is busy...
+		//if mainform is busy, it means we are processing a sample
 	        if (_mainForm.isBusy() || tempBusy == true) {
 	        	out.println("busy");
 	        	System.out.println("System is busy.");
@@ -57,6 +58,7 @@ public class AUClientThread extends Thread {
 	        	//Read path where files should be stored
 	        	String sequestPathString = in.readUTF();
 	        	System.out.println("In path: "+sequestPathString);
+			//BaseFolder is where the search results are generated, but we have not gotten to that point yet
 	        	Path sequestPath = Paths.get(_params.getGlobalParam("SEQUEST.BaseFolder", "C:\\sequest"), sequestPathString);
 	        	Files.createDirectories(sequestPath);
 	        	//Read number of files
@@ -73,6 +75,7 @@ public class AUClientThread extends Thread {
 		        	String file = in.readUTF();
 		        	System.out.println(file);
 		        	Path filePath = Paths.get(sequestPath.toString()+file.substring(file.lastIndexOf(".")));
+				//overwriting files if they already exist and were not deleted already
 		        	Files.deleteIfExists(filePath);
 		        	//Read file size
 		        	long fileSize = in.readLong();
@@ -96,6 +99,7 @@ public class AUClientThread extends Thread {
 		        String sample = in.readUTF();
 		        System.out.println("Processing sample: "+sample);
 		        out.println("received");
+			//initiates the database searching for that sample
 		        _mainForm.processSample(sample);
 		        tempBusy = false;
 	        }
