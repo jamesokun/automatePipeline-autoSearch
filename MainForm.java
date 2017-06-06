@@ -295,6 +295,7 @@ public class MainForm extends JFrame implements Form {
 		_clientList.setModel(new DefaultTableModel(clientData, columnNames));
 		JComboBox<String> priorities = new JComboBox<String>();
 		priorities.addActionListener(new PriorityListener());
+		//setting priorities to different samples
 		priorities.addItem("1-High");
 		priorities.addItem("2-Normal");
 		priorities.addItem("3-Low");
@@ -332,6 +333,7 @@ public class MainForm extends JFrame implements Form {
 			_sample = _samplePath.substring(_samplePath.lastIndexOf(_sep)+1);
 			
 			//Get file type and extension
+			//if it is something other than a raw file, means we are processing some other type of data
 			if(_samplePath.indexOf(":") > 0) {
 				String ext = _samplePath.substring(_samplePath.lastIndexOf(":"));
 				_fileType = ext.substring(1, ext.indexOf("."));
@@ -339,6 +341,7 @@ public class MainForm extends JFrame implements Form {
 				_samplePath = _samplePath.substring(0, _samplePath.lastIndexOf(":"));
 				_sample = _sample.substring(0, _sample.lastIndexOf(":"));
 			}
+			//otherwise we know thats it is a raw file 
 			else {
 				_fileType = "THMRAW";
 				_fileExt = ".raw";
@@ -379,6 +382,7 @@ public class MainForm extends JFrame implements Form {
 			_userName = parts[4];
 			String msMethod = parts[5];
 			String sampleQueueID, expFolder, storeLocation, protocolID, species;
+			//helps consolidate to a single txt file
 			Vector<String> toWrite = new Vector<String>();
 			System.out.println(".raw file path: " + rawBackupPath + _fileExt);
 			System.out.println(".zip file path: " + _srBackupPath + ".zip");
@@ -408,6 +412,7 @@ public class MainForm extends JFrame implements Form {
 			}
 			toWrite.add("Instrument = " + _instrumentType);
 			toWrite.add("SearchEngine = " + _searchEngine);
+			//writing everything from toWrite to the consolidated txt file 
 			Files.write(Paths.get(_sampleLocalPath+".txt"), toWrite, StandardCharsets.UTF_8);
 		} catch (NullPointerException | IndexOutOfBoundsException | IOException e) {
 			log("ERROR: COULD NOT PARSE FILE");
@@ -513,6 +518,9 @@ public class MainForm extends JFrame implements Form {
 	 * @param database
 	 */
 	private void search(String database) {
+		//DTA files represent the spectra contained in a single MS/MS call 
+		//The info we need to pull out of a DTA is mass and charge of precursor ions
+		//Then mass of all derivative ions and what their intensities are as well. 
 		this.makeDTA(); //Make the DTA files
 		if (database.equals("S")) {
 			this.sequestSearch();
@@ -746,6 +754,8 @@ public class MainForm extends JFrame implements Form {
 		while (!Files.exists(resultFile)) {
 			//While results are not available, put the thread to sleep
 			try {
+				//checking every 60 seconds to see if mascotdowloaderoutput has been created
+				//once found exit loop
 				Thread.sleep(60000);
 			} catch (InterruptedException e) {
 				this.log("          ERROR: Error while waiting for Mascot results");
@@ -767,6 +777,7 @@ public class MainForm extends JFrame implements Form {
 		Path resultCSV = null;
 		pathToCSV = null;
 		try {
+			//read resultFile to find the XML and CSV path
 			List<String> lines = Files.readAllLines(resultFile, StandardCharsets.UTF_8);
 			String line = lines.get(0);
 			if (line.startsWith("OK")) {
